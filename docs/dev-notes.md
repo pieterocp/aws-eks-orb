@@ -31,9 +31,9 @@ The `orb-publishing` context is referenced in the build. In particular, the foll
 
 The tests configured in `.circleci/config.yml` have been tested to be able to successfully clean up the AWS resources used, via the `delete-cluster` command. 
 
-However, when adding new tests, depending on the type of AWS resources involved (e.g. AWS Elastic Load Balancers), you may encounter situations where if the resources deployed onto the EKS cluster are not deleted before running `delete-cluster`, `delete-cluster` may fail to remove all of the deployed AWS resources, e.g. the VPC.
+However, when adding new tests, depending on the type of AWS resources involved (e.g. AWS Elastic Load Balancers), you may encounter situations where if the resources deployed onto the EKS cluster are not deleted before running `delete-cluster`, `delete-cluster` may fail to remove all the deployed AWS resources, e.g. the VPC.
 
-When that happens, in order to properly clean up the AWS resources, first try to delete the CloudFormation stacks (there are 2 for each deployed cluster - one that has `nodegroup` in its name and one that ends with the `-cluster` suffix) by deleting the nodegroup stack first and then the the other stack, for each cluster and region under test.
+When that happens, in order to properly clean up the AWS resources, first try to delete the CloudFormation stacks (there are 2 for each deployed cluster - one that has `nodegroup` in its name and one that ends with the `-cluster` suffix) by deleting the nodegroup stack first and then the other stack, for each cluster and region under test.
 
 If a CloudFormation stack cannot be deleted, check on the status of the CloudFormation stack corresponding to the EKS cluster used in the test. If the status is `DELETE_FAILED`, check the events for a hint of which AWS resources could not be deleted. Usually it is a Load Balancer that is preventing the VPC (that was created by `create-cluster`) from being deleted. Once that resource has been deleted, you should be able to delete the entire VPC from the `VPC` section of the AWS Console.
 
